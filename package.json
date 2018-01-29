@@ -35,6 +35,8 @@
     "fs-extra": "3.0.1",
     "html-webpack-plugin": "2.29.0",
     "jest": "^22.1.4",
+    "jsdom": "^11.6.1",
+    "jsdom-global": "^3.0.2",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.8",
@@ -62,7 +64,8 @@
     "build:client": "node scripts/build.js",
     "build:server": "tsc -p server && tsc-resolve -p server",
     "run:server": "node build/index.js",
-    "dev": "concurrently \"yarn dev:client\" \"PORT=1337 yarn start\"",
+    "dev:server": "yarn build:clean ; yarn build:server && cp -R public build/assets && yarn run:server",
+    "dev": "concurrently \"yarn dev:client\" \"PORT=1337 yarn dev:server\"",
     "start": "yarn build:clean ; yarn build:client && yarn build:server && yarn run:server",
     "test": "node scripts/test.js --env=jsdom"
   },

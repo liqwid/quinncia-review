@@ -11,11 +11,9 @@ import { readdirSync } from 'fs'
 import { resolve } from 'path'
 import { assetsPath } from 'utils/paths'
 
-const IMAGES_PATH = resolve(assetsPath, 'img')
+export const IMAGES_PATH = resolve(assetsPath, 'img')
 
-// Load image urls upon startup
-const imageUrls = readdirSync(IMAGES_PATH)
-
-export function getImageUrls() {
-  return imageUrls
+// Returns image url paths
+export function getImageUrls(): string[] {
+  return readdirSync(IMAGES_PATH)
 }

@@ -4,3 +4,15 @@ body {
   font-family: sans-serif;
   background-color: azure;
 }
+
+@font-face {
+  font-family: Alegreya;
+  src: url(AlegreyaSans-Thin.ttf);
+  font-weight: thin;
+}
+
+@font-face {
+  font-family: Alegreya;
+  src: url(AlegreyaSans-Light.ttf);
+  font-weight: light;
+}

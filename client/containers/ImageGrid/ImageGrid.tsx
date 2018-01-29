@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Image } from 'components/Image'
+import { Loader } from 'components/Loader'
 
 import { Subject } from 'rxjs/Subject'
 import 'rxjs/add/operator/filter'
@@ -7,7 +8,12 @@ import 'rxjs/add/operator/takeUntil'
 import { getImages$, refreshImages, ImageStream, SuccessImageMessage, ImageMessage,
   LOADING, SUCCESS, ERROR } from 'services/images'
 
-export interface ImageGridProps {}
+export const ERROR_TEXT: string = 'Failed to load images'
+export const REFRESH_TEXT: string = 'Try again'
+
+export interface ImageGridProps {
+  style?: {}
+}
 
 export interface ImageGridState {
   imageUrls: string[]
@@ -57,18 +63,19 @@ export class ImageGrid extends React.Component<ImageGridProps, ImageGridState> {
   }
 
   render() {
+    const { style } = this.props
     const { imageUrls, loading, error } = this.state
 
     return (
-      <div>
+      <div style={style}>
         {
           error && <div>
-            <p>Failed to load images</p>
-            <a href='' onClick={refreshImages}>Try again</a>
+            <p>{ERROR_TEXT}</p>
+            <a href='javascript:void(0)' onClick={refreshImages}>{REFRESH_TEXT}</a>
           </div>
         }
         {
-          loading && <div>Loading...</div>
+          loading && <Loader />
         }
         {
           imageUrls && imageUrls.map((url) =>
