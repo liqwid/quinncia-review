@@ -4,7 +4,7 @@ import { Loader } from 'components/Loader'
 import { Image } from 'components/Image'
 import { ImageGrid, ImageGridProps, ImageGridState, ERROR_TEXT, REFRESH_TEXT } from "./ImageGrid"
 import { shallow, mount, ShallowWrapper } from 'enzyme'
-import { refreshImages, getImages$ } from 'services/images'
+import { getImages$ } from 'services/images'
 
 const IMAGE_URLS = [ 'url1', 'url2' ]
 

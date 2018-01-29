@@ -22,12 +22,26 @@ export interface UploadButtonProps {}
 export interface UploadButtonState {}
 
 export class UploadButton extends React.Component<UploadButtonProps, UploadButtonState> {
+  fileInput: HTMLInputElement
+
   upload() {
     return
   }
 
   render() {
     const { children } = this.props
-    return <Button onClick={() => this.upload()}>{children}</Button>
+    return (
+      <Button onClick={() => this.fileInput.click()}>
+        <input
+          type='file'
+          multiple={true}
+          accept='image/*'
+          onChange={() => this.upload()}
+          style={{ display: 'none' }}
+          ref={(node: HTMLInputElement) => { this.fileInput = node }}
+        />
+        {children}
+      </Button>
+    )
   }
 }
