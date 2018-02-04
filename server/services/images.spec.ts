@@ -1,6 +1,7 @@
 import { join } from 'path'
-import { mkdirSync, rmdirSync, writeFileSync, unlinkSync } from 'fs'
-import { getImageUrls, IMAGES_PATH } from './images'
+import { mkdirSync, rmdirSync, writeFileSync, unlinkSync, readFileSync } from 'fs'
+import { getImageUrls, saveImage, IMAGES_PATH } from './images'
+import { Buffer } from 'buffer'
 
 jest.mock('utils/paths', () => ({ assetsPath: '.' }))
 
@@ -11,9 +12,15 @@ const STUB_FILES: { [fileName: string]: string } = {
 }
 
 describe('images service', () => {
+  beforeEach(() => {
+    mkdirSync(IMAGES_PATH)
+  })
+  afterEach(() => {
+    rmdirSync(IMAGES_PATH)
+  })
+
   describe('getImageUrls', () => {
     beforeEach(() => {
-      mkdirSync(IMAGES_PATH)
       for (let fileName in STUB_FILES) {
         writeFileSync(join(IMAGES_PATH, fileName), STUB_FILES[fileName])
       }
@@ -23,12 +30,28 @@ describe('images service', () => {
       for (let fileName in STUB_FILES) {
         unlinkSync(join(IMAGES_PATH, fileName))
       }
-      rmdirSync(IMAGES_PATH)
     })
 
-    it('should return promise that resolves with contents of the img path', () => {
+    it('should return promise that resolves with contents of the img path', (done) => {
       getImageUrls().then((images) => {
         expect(images).toEqual(Object.keys(STUB_FILES))
+        done()
+      })
+    })
+  })
+  describe('saveImage', () => {
+    it('should return promise that resolves with creating of an image', (done) => {
+      const imageBuffer = new Buffer('test')
+      const image = {
+        originalname: 'file',
+        buffer: imageBuffer
+      }
+      saveImage(<Express.Multer.File> image).then(() => {
+        const savedImage = readFileSync(`${IMAGES_PATH}/${image.originalname}`)
+
+        expect(savedImage).toEqual(imageBuffer)
+        unlinkSync(`${IMAGES_PATH}/${image.originalname}`)
+        done()
       })
     })
   })
