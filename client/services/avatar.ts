@@ -31,7 +31,7 @@ export function getAvatar$(): Observable<string | null> {
 }
 
 export function setAvatar(imageUrl: string) {
-  return http.put({ url: AVATAR_URL, body: imageUrl })
+  return http.put({ url: AVATAR_URL, body: { imageUrl }, headers: { 'Content-Type': 'application/json' } })
              .subscribe(() => avatarState.next(imageUrl || null))
 }
 

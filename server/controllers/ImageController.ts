@@ -3,21 +3,21 @@ import { getImageUrls, saveImage, deleteImage } from 'services/images'
 
 const FILE_FIELD_NAME: string = 'file'
 
-@Controller()
+@Controller('/images')
 export class ImageController {
-  @Get('/images')
+  @Get()
   async getAll(): Promise<string[]> {
     return getImageUrls()
   }
 
-  @Post('/images')
+  @Post()
   async uploadImage(@UploadedFile(FILE_FIELD_NAME) file: Express.Multer.File): Promise<{}> {
     await saveImage(file)
 
     return { status: 'OK' }
   }
 
-  @Delete('/images/:fileName')
+  @Delete('/:fileName')
   async delete(@Param('fileName') fileName: string): Promise<{}> {
     await deleteImage(fileName)
 

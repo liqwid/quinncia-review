@@ -17,6 +17,8 @@ const SidebarLayout = styled.div`
   position: fixed;
   width: ${WIDTH}px;
   background-color: rgba(52,76,91,0.9);
+  background-size: cover;
+  background-position: center;
   z-index: 1;
 `
 
@@ -42,7 +44,7 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
   state: SidebarState = {
     open: false,
-    avatarUrl: 'none'
+    avatarUrl: ''
   }
 
   componentDidMount() {
@@ -59,7 +61,7 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
     // Auto unsubscribe when this.unsubscribe$.next is called
     .takeUntil(this.unsubscribe$)
     .subscribe((avatarUrl: string | null) => {
-      if (!avatarUrl) avatarUrl = 'none'
+      if (!avatarUrl) avatarUrl = ''
 
       this.setState({ avatarUrl })
     })
@@ -75,7 +77,10 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
     const left = open ? 0 : CLOSED_WIDTH - WIDTH
     return (
       <SidebarLayout
-        style={{ left, backgroundImage: `url(${IMG_PATH}${avatarUrl})` }}
+        style={{
+          left,
+          backgroundImage: avatarUrl && `url(${IMG_PATH}${avatarUrl})` || ''
+        }}
       >
         <MenuIcon src={menuIcon} onClick={() => this.toggleSidebar()}/>
         {open && <UploadButton>Upload</UploadButton>}

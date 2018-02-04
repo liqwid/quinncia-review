@@ -2,8 +2,11 @@ import * as React from 'react'
 import styled from 'styled-components'
 
 import { deleteImage, IMG_PATH } from 'services/images'
+import { setAvatar } from 'services/avatar'
 
 const shuriken = require('./shuriken.png')
+const lotus = require('./lotus.png')
+
 export interface ImageProps {
   src: string
 }
@@ -42,6 +45,19 @@ const DeleteIcon = styled.img`
 `
 DeleteIcon.displayName = 'DeleteIcon'
 
+const SetAvatarIcon = styled.img`
+  position: absolute;
+  bottom: ${MARGIN + 10}px;
+  left: ${MARGIN + 10}px;
+  height: 30px;
+  width: 30px;
+  cursor: pointer;
+  transform: rotate(45deg);
+  background-color: azure;
+  border-radius: 15px;
+`
+SetAvatarIcon.displayName = 'SetAvatarIcon'
+
 export class Image extends React.Component<ImageProps, ImageState> {
   state: ImageState = {
     hover: false
@@ -56,10 +72,18 @@ export class Image extends React.Component<ImageProps, ImageState> {
         onMouseLeave={() => this.setState({ hover: false })}
       >
         <Img src={`${IMG_PATH}${src}`} />
-        {hover && <DeleteIcon
-          src={shuriken}
-          onClick={() => deleteImage(src)}
-        />}
+        {
+          hover && <DeleteIcon
+            src={shuriken}
+            onClick={() => deleteImage(src)}
+          />
+        }
+        {
+          hover && <SetAvatarIcon
+            src={lotus}
+            onClick={() => setAvatar(src)}
+          />
+        }
       </ImageWrapper>
     )
   }
