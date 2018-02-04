@@ -1,6 +1,6 @@
 import { join } from 'path'
-import { mkdirSync, rmdirSync, writeFileSync, unlinkSync, readFileSync } from 'fs'
-import { getImageUrls, saveImage, IMAGES_PATH } from './images'
+import { mkdirSync, rmdirSync, writeFileSync, unlinkSync, readFileSync, readdirSync } from 'fs'
+import { getImageUrls, saveImage, deleteImage, IMAGES_PATH } from './images'
 import { Buffer } from 'buffer'
 
 jest.mock('utils/paths', () => ({ assetsPath: '.' }))
@@ -51,6 +51,30 @@ describe('images service', () => {
 
         expect(savedImage).toEqual(imageBuffer)
         unlinkSync(`${IMAGES_PATH}/${image.originalname}`)
+        done()
+      })
+    })
+  })
+  describe('deleteiImage', () => {
+    beforeEach(() => {
+      for (let fileName in STUB_FILES) {
+        writeFileSync(join(IMAGES_PATH, fileName), STUB_FILES[fileName])
+      }
+    })
+
+    afterEach(() => {
+      for (let fileName in STUB_FILES) {
+        try {
+          unlinkSync(join(IMAGES_PATH, fileName))
+        } catch (e) {}
+      }
+    })
+
+    it('should return promise that resolves with deletion of an image', (done) => {
+      const fileNames = Object.keys(STUB_FILES)
+      const imageName = fileNames[0]
+      deleteImage(imageName).then(() => {
+        expect(readdirSync(IMAGES_PATH)).toEqual(fileNames.slice(1))
         done()
       })
     })

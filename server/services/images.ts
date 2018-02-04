@@ -7,7 +7,7 @@
  * E.g. 1 image service - multiple server apps
  */
 
-import { readdir, writeFile } from 'fs'
+import { readdir, writeFile, unlink } from 'fs'
 import { resolve } from 'path'
 import { assetsPath } from 'utils/paths'
 import { promisify } from 'util'
@@ -21,4 +21,8 @@ export function getImageUrls(): Promise<string[]> {
 
 export function saveImage(file: Express.Multer.File): Promise<void> {
   return promisify(writeFile)(`${IMAGES_PATH}/${file.originalname}`, file.buffer)
+}
+
+export function deleteImage(name: string): Promise<void> {
+  return promisify(unlink)(`${IMAGES_PATH}/${name}`)
 }
