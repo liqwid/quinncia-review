@@ -2,6 +2,8 @@
 
 Based on create-react-app --scripts-version=react-scripts-ts
 
+UI explained in Help.jpg
+
 ### Install
 
 1. Install node https://nodejs.org/en/
