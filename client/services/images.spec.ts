@@ -122,10 +122,7 @@ describe('client image service', () => {
 
       expect(http.delete).toHaveBeenCalledTimes(1)
       expect(http.delete).toHaveBeenCalledWith({
-        url: IMAGES_URL,
-        body: {
-          fileName
-        }
+        url: `${IMAGES_URL}/${fileName}`
       })
     })
 

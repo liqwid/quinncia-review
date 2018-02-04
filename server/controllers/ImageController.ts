@@ -17,7 +17,7 @@ export class ImageController {
     return { status: 'OK' }
   }
 
-  @Delete('/images')
+  @Delete('/images/:fileName')
   async delete(@Param('fileName') fileName: string): Promise<{}> {
     await deleteImage(fileName)
 

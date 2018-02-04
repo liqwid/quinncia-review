@@ -87,10 +87,7 @@ export function uploadImages(files: FileList | null) {
 
 export function deleteImage(imageName: string) {
   http.delete({
-    url: IMAGES_URL,
-    body: {
-      fileName: imageName
-    }
+    url: `${IMAGES_URL}/${imageName}`,
   })
   .subscribe(() => {
     imagesState.next(
