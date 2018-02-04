@@ -52,7 +52,6 @@ const SetAvatarIcon = styled.img`
   height: 30px;
   width: 30px;
   cursor: pointer;
-  transform: rotate(45deg);
   background-color: azure;
   border-radius: 15px;
 `
