@@ -19,7 +19,7 @@ describe('Image component', () => {
     let imageWrapper: ShallowWrapper
     beforeEach(() => {
       imageWrapper = wrapper.find('ImageWrapper')
-    });
+    })
     it('should render ImageWrapper', () => {
       expect(imageWrapper).toHaveLength(1)
     })

@@ -21,6 +21,7 @@ const SidebarLayout = styled.div`
   background-position: center;
   z-index: 1;
 `
+SidebarLayout.displayName = 'SidebarLayout'
 
 const MenuIcon = styled.img`
   position: absolute;
@@ -32,11 +33,13 @@ const MenuIcon = styled.img`
   border-radius: 25px;
   cursor: pointer;
 `
+MenuIcon.displayName = 'MenuIcon'
+
 export interface SidebarProps {}
 
 export interface SidebarState {
   open: boolean
-  avatarUrl: string | 'none'
+  avatarUrl: string
 }
 
 export class Sidebar extends React.Component<SidebarProps, SidebarState> {

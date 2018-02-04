@@ -9,3 +9,4 @@ export const deleteImage = jest.fn()
 export const LOADING = 'loading'
 export const ERROR = 'error'
 export const SUCCESS = 'success'
+export const IMG_PATH = 'img/'
