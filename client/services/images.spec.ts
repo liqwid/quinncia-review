@@ -1,10 +1,10 @@
 import { Observable } from 'rxjs/Observable'
 import { Subject } from 'rxjs/Subject'
 import 'rxjs/add/operator/takeUntil'
-import { getImages$, refreshImages, ImageStream, uploadImages, SUCCESS } from './images'
+import { getImages$, refreshImages, uploadImages, deleteImage,
+  ImageStream, SUCCESS, IMAGES_URL } from './images'
 import http from 'services/api'
 import { uploadFile } from 'services/upload'
-import { takeUntil } from 'rxjs/operator/takeUntil';
 
 jest.mock('services/api')
 jest.mock('services/upload')
@@ -46,7 +46,7 @@ describe('client image service', () => {
         state: SUCCESS,
         imageUrls: ['file']
       })
-    });
+    })
   })
 
   describe('refreshImages', () => {
@@ -105,7 +105,6 @@ describe('client image service', () => {
       expect(updateImageMock).toHaveBeenCalledTimes(0)
     })
     it('should not call uploadFile or update state when fileList is empty', () => {
-      uploadImages(fileList)
       image$.takeUntil(unsubscribe$).subscribe(updateImageMock)
       updateImageMock.mockClear()
 
@@ -113,6 +112,42 @@ describe('client image service', () => {
 
       expect(uploadFile).toHaveBeenCalledTimes(0)
       expect(updateImageMock).toHaveBeenCalledTimes(0)
+    })
+  })
+
+  describe('deleteImage', () => {
+    it('should call http delete with correct params', () => {
+      const fileName = 'fileName'
+      deleteImage(fileName)
+
+      expect(http.delete).toHaveBeenCalledTimes(1)
+      expect(http.delete).toHaveBeenCalledWith({
+        url: IMAGES_URL,
+        body: {
+          fileName
+        }
+      })
+    })
+
+    it('should remove image from imagesState', () => {
+      const fileName = 'fileName'
+      http.get.mockImplementationOnce(() => Observable.of([fileName]))
+      refreshImages()
+      image$.takeUntil(unsubscribe$).subscribe(updateImageMock)
+
+      expect(updateImageMock).toHaveBeenCalledWith({
+        state: SUCCESS,
+        imageUrls: [fileName]
+      })
+
+      updateImageMock.mockClear()
+      deleteImage(fileName)
+
+      expect(updateImageMock).toHaveBeenCalledTimes(1)
+      expect(updateImageMock).toHaveBeenCalledWith({
+        state: SUCCESS,
+        imageUrls: []
+      })
     })
   })
 })

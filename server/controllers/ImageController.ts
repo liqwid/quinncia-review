@@ -1,5 +1,5 @@
-import { Controller, Get, Post, UploadedFile } from 'routing-controllers'
-import { getImageUrls, saveImage } from 'services/images'
+import { Controller, Get, Post, Delete, Param, UploadedFile } from 'routing-controllers'
+import { getImageUrls, saveImage, deleteImage } from 'services/images'
 
 const FILE_FIELD_NAME: string = 'file'
 
@@ -11,14 +11,16 @@ export class ImageController {
   }
 
   @Post('/images')
-  async uploadImage(@UploadedFile(FILE_FIELD_NAME) file: Express.Multer.File) {
-    // if (!allowedMimeTypes.includes(file.mimetype)) {
-    //   throw new BadRequestError(`${file.mimetype} is not a supported file type!`);
-    // }
-    await saveImage(file);
+  async uploadImage(@UploadedFile(FILE_FIELD_NAME) file: Express.Multer.File): Promise<{}> {
+    await saveImage(file)
 
-    return {
-      status: 'OK'
-    };
+    return { status: 'OK' }
+  }
+
+  @Delete('/images')
+  async delete(@Param('fileName') fileName: string): Promise<{}> {
+    await deleteImage(fileName)
+
+    return { status: 'OK' }
   }
 }
