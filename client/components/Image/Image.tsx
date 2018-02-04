@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
-import { deleteImage } from 'services/images'
+import { deleteImage, IMG_PATH } from 'services/images'
 
 const shuriken = require('./shuriken.png')
 export interface ImageProps {
@@ -14,8 +14,6 @@ export interface ImageState {
 
 const MARGIN: number = 10
 const BORDER: number = 3
-
-export const IMG_PATH = 'img/'
 
 const ImageWrapper = styled.div`
   position: relative;

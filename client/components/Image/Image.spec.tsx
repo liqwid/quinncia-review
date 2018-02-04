@@ -1,7 +1,9 @@
 import * as React from 'react'
-import { IMG_PATH, Image, ImageProps, ImageState } from './Image'
+import { Image, ImageProps, ImageState } from './Image'
+import { IMG_PATH } from 'services/images'
 import { shallow, ShallowWrapper } from 'enzyme'
 
+jest.mock('services/avatar')
 const src: string = 'src'
 
 describe('Image component', () => {

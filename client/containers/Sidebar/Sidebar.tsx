@@ -1,5 +1,10 @@
 import * as React from 'react'
+import { Subject } from 'rxjs/Subject'
 import styled from 'styled-components'
+import 'rxjs/add/operator/takeUntil'
+import { IMG_PATH } from 'services/images'
+import { getAvatar$ } from 'services/avatar'
+
 import { UploadButton } from 'components/UploadButton'
 
 const menuIcon = require('./menuIcon.png')
@@ -12,6 +17,7 @@ const SidebarLayout = styled.div`
   position: fixed;
   width: ${WIDTH}px;
   background-color: rgba(52,76,91,0.9);
+  z-index: 1;
 `
 
 const MenuIcon = styled.img`
@@ -28,11 +34,35 @@ export interface SidebarProps {}
 
 export interface SidebarState {
   open: boolean
+  avatarUrl: string | 'none'
 }
 
 export class Sidebar extends React.Component<SidebarProps, SidebarState> {
-  state = {
-    open: false
+  unsubscribe$: Subject<void>
+
+  state: SidebarState = {
+    open: false,
+    avatarUrl: 'none'
+  }
+
+  componentDidMount() {
+    this.unsubscribe$ = new Subject()
+    this.connectAvatarService()
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe$.next()
+  }
+
+  connectAvatarService() {
+    getAvatar$()
+    // Auto unsubscribe when this.unsubscribe$.next is called
+    .takeUntil(this.unsubscribe$)
+    .subscribe((avatarUrl: string | null) => {
+      if (!avatarUrl) avatarUrl = 'none'
+
+      this.setState({ avatarUrl })
+    })
   }
 
   toggleSidebar() {
@@ -41,10 +71,12 @@ export class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
   render() {
     const { children } = this.props
-    const { open } = this.state
+    const { open, avatarUrl } = this.state
     const left = open ? 0 : CLOSED_WIDTH - WIDTH
     return (
-      <SidebarLayout style={{ left }}>
+      <SidebarLayout
+        style={{ left, backgroundImage: `url(${IMG_PATH}${avatarUrl})` }}
+      >
         <MenuIcon src={menuIcon} onClick={() => this.toggleSidebar()}/>
         {open && <UploadButton>Upload</UploadButton>}
         {children}

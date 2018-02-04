@@ -6,10 +6,9 @@ import 'rxjs/add/observable/dom/ajax'
  * API abstraction layer
  */
 
-function get({ url, headers }: AjaxRequest): Observable<string[]> {
+function get({ url, headers }: AjaxRequest): Observable<AjaxResponse> {
   return Observable.ajax
           .get(<string> url, headers)
-          .map((res: AjaxResponse) => res.response)
 }
 
 /**
@@ -26,16 +25,14 @@ function post({url, body, headers, progressSubscriber}: AjaxRequest): Observable
   })
 }
 
-function put({ url, body, headers }: AjaxRequest): Observable<string> {
+function put({ url, body, headers }: AjaxRequest): Observable<AjaxResponse> {
   return Observable.ajax
           .put(<string> url, body, headers)
-          .map((res: AjaxResponse) => res.response)
 }
 
-function httpDelete({ url, body, headers }: AjaxRequest): Observable<string> {
+function httpDelete({ url, body, headers }: AjaxRequest): Observable<AjaxResponse> {
   return Observable.ajax
           .delete(<string> url, headers)
-          .map((res: AjaxResponse) => res.response)
 }
 
 /**

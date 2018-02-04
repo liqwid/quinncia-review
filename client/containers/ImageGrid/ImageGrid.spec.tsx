@@ -16,6 +16,7 @@ const LOADING_MESSAGE = { state: LOADING }
 const SUCCESS_MESSAGE = { state: SUCCESS, imageUrls: IMAGE_URLS }
 
 jest.mock('services/images')
+jest.mock('services/avatar')
 
 describe('Image component', () => {
   let wrapper: ShallowWrapper<ImageGridProps, ImageGridState>

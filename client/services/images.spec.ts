@@ -5,11 +5,13 @@ import { getImages$, refreshImages, uploadImages, deleteImage,
   ImageStream, SUCCESS, IMAGES_URL } from './images'
 import http from 'services/api'
 import { uploadFile } from 'services/upload'
+import { deleteAvatar, AVATAR } from 'services/avatar'
 
 jest.mock('services/api')
 jest.mock('services/upload')
+jest.mock('services/avatar')
 
-let unsubscribe$: Subject<void> = new Subject()
+const unsubscribe$: Subject<void> = new Subject()
 const updateImageMock: jest.Mock = jest.fn()
 
 describe('client image service', () => {
@@ -37,7 +39,7 @@ describe('client image service', () => {
       expect(http.get).toHaveBeenCalledTimes(1)
     })
     it('should update imagesState', () => {
-      http.get.mockImplementationOnce(() => Observable.of(['file']))
+      http.get.mockImplementationOnce(() => Observable.of({ response: ['file'] }))
       refreshImages()
       image$.takeUntil(unsubscribe$).subscribe(updateImageMock)
 
@@ -128,7 +130,7 @@ describe('client image service', () => {
 
     it('should remove image from imagesState', () => {
       const fileName = 'fileName'
-      http.get.mockImplementationOnce(() => Observable.of([fileName]))
+      http.get.mockImplementationOnce(() => Observable.of({ response: [fileName] }))
       refreshImages()
       image$.takeUntil(unsubscribe$).subscribe(updateImageMock)
 
@@ -145,6 +147,12 @@ describe('client image service', () => {
         state: SUCCESS,
         imageUrls: []
       })
+    })
+
+    it('should call deleteAvatar if image url is the same as of avatar', () => {
+      deleteImage(AVATAR)
+
+      expect(deleteAvatar).toHaveBeenCalledTimes(1)
     })
   })
 })
