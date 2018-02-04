@@ -28,6 +28,8 @@
     "webpack",
     "jest",
     "server",
-    "*/__mocks__/*"
+    "*/__mocks__/*",
+    "**/*.spec.*",
+    "**/*.test.*"
   ]
 }

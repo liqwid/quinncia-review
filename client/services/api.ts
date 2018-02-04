@@ -15,16 +15,15 @@ function get({ url, headers }: AjaxRequest): Observable<string[]> {
 /**
  * Special post method is used to be able to track upload progress
  */
-function post({url, body, headers, progressSubscriber}: AjaxRequest): Observable<string> {
+function post({url, body, headers, progressSubscriber}: AjaxRequest): Observable<AjaxResponse> {
   return Observable.ajax({
     url,
     body,
     headers,
-    method: 'POST',
+    method: 'post',
     crossDomain: true,
     progressSubscriber
   })
-  .map((res: AjaxResponse) => res.response)
 }
 
 function put({ url, body, headers }: AjaxRequest): Observable<string> {

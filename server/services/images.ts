@@ -7,13 +7,18 @@
  * E.g. 1 image service - multiple server apps
  */
 
-import { readdirSync } from 'fs'
+import { readdir, writeFile } from 'fs'
 import { resolve } from 'path'
 import { assetsPath } from 'utils/paths'
+import { promisify } from 'util'
 
 export const IMAGES_PATH = resolve(assetsPath, 'img')
 
 // Returns image url paths
-export function getImageUrls(): string[] {
-  return readdirSync(IMAGES_PATH)
+export function getImageUrls(): Promise<string[]> {
+  return promisify(readdir)(IMAGES_PATH)
+}
+
+export function saveImage(file: Express.Multer.File): Promise<void> {
+  return promisify(writeFile)(`${IMAGES_PATH}/${file.originalname}`, file.buffer)
 }

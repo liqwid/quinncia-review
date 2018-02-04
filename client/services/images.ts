@@ -1,26 +1,28 @@
 import http from 'services/api'
+import { uploadFile } from 'services/upload'
 import { Subject } from 'rxjs/Subject'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
 import 'rxjs/add/observable/of'
+import 'rxjs/add/observable/combineLatest'
 import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/take'
 import 'rxjs/add/operator/merge'
 import 'rxjs/add/operator/catch'
 import 'rxjs/add/operator/startWith'
 import 'rxjs/add/operator/switchMap'
 import 'rxjs/add/operator/shareReplay'
+import 'rxjs/add/operator/concatMapTo'
 
 type SUCCESS = 'success'
 type LOADING = 'loading'
 type ERROR = 'error'
-type Message = {
-  state: LOADING | ERROR
-}
-export type SuccessImageMessage = {
-  state: SUCCESS
+type State = SUCCESS | LOADING | ERROR
+export type ImageMessage = {
+  state: State
   imageUrls: string[]
 }
-export type ImageMessage = Message | SuccessImageMessage
 export type ImageStream = Observable<ImageMessage>
 
 export const SUCCESS: SUCCESS = 'success'
@@ -32,28 +34,30 @@ export const IMAGES_URL = '/images'
 // Control handle to fecth images
 const imageFetchHandle: Subject<void> = new Subject()
 
-// Control handle to update images on client
-const imageUpdateHandle: Subject<string[]> = new Subject()
-const imageUpdate$: Observable<ImageMessage> = imageUpdateHandle.map(
-  (imageUrls: string[]): ImageMessage => ({ state: SUCCESS, imageUrls })
+// State of image urls
+const imagesState: BehaviorSubject<string[]> = new BehaviorSubject([])
+
+const images$: ImageStream = Observable.combineLatest(
+  imageFetchHandle
+  // Initial fetch on first subscription
+  .startWith(null)
+  // Fetching images
+  // switchMap operator cancels previous request
+  .switchMap(fetchImages)
+,
+  imagesState.asObservable()
+).map(
+  ([ state, imageUrls ]: [ State, string[] ]): ImageMessage => ({ state , imageUrls })
 )
+// Share latest ImageMessage among subscribers
+// so that an additional subscribe won't require to fetch images
+.shareReplay(1)
 
-const images$: ImageStream = imageFetchHandle
-                              // Initial fetch on first subscription
-                              .startWith(null)
-                              // Fetching images
-                              // switchMap operator cancels previous request
-                              .switchMap(fetchImages)
-                              // Entry point for local image updates
-                              .merge(imageUpdate$)
-                              // Share latest ImageMessage among subscribers
-                              // so that an additional subscribe won't require to fetch images
-                              .shareReplay(1)
-
-function fetchImages(): Observable<ImageMessage> {
+function fetchImages(): Observable<State> {
   return http.get({ url: IMAGES_URL })
-              .map((imageUrls: string[]): ImageMessage => ({ state: SUCCESS, imageUrls }))
-              .catch((): Observable<ImageMessage> => Observable.of({ state: ERROR }))
+              .do((imageUrls: string[]) => imagesState.next(imageUrls))
+              .map((): State => SUCCESS)
+              .catch((): Observable<ERROR> => Observable.of(ERROR))
 }
 
 /**
@@ -68,4 +72,15 @@ export function getImages$(): ImageStream {
  */
 export function refreshImages() {
   imageFetchHandle.next()
+}
+
+export function uploadImages(files: FileList | null) {
+  if (!files) return
+
+  for (let file of Array.from(files)) {
+    uploadFile(IMAGES_URL, file)
+    .subscribe(() =>
+      imagesState.next(imagesState.value.concat(file.name))
+    )
+  }
 }

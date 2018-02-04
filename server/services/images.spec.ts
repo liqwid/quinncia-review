@@ -26,8 +26,10 @@ describe('images service', () => {
       rmdirSync(IMAGES_PATH)
     })
 
-    it('should return contents of the img path', () => {
-      expect(getImageUrls()).toEqual(Object.keys(STUB_FILES))
+    it('should return promise that resolves with contents of the img path', () => {
+      getImageUrls().then((images) => {
+        expect(images).toEqual(Object.keys(STUB_FILES))
+      })
     })
   })
 })

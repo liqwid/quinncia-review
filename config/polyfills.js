@@ -24,4 +24,11 @@ if (process.env.NODE_ENV === 'test') {
   enzyme.configure({ adapter: new Adapter() });
 
   require('raf').polyfill(global);
+  // Polyfilling FileList with set to reuse add method
+  global.FileList = Set;
+  // Polyfilling File, required attr is name
+  global.File = function(blobs, name) {
+    this.name = name;
+  }
+  global.Blob = function() {}
 }

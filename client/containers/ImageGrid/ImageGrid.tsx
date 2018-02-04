@@ -5,7 +5,7 @@ import { Loader } from 'components/Loader'
 import { Subject } from 'rxjs/Subject'
 import 'rxjs/add/operator/filter'
 import 'rxjs/add/operator/takeUntil'
-import { getImages$, refreshImages, ImageStream, SuccessImageMessage, ImageMessage,
+import { getImages$, refreshImages, ImageStream, ImageMessage,
   LOADING, SUCCESS, ERROR } from 'services/images'
 
 export const ERROR_TEXT: string = 'Failed to load images'
@@ -54,8 +54,8 @@ export class ImageGrid extends React.Component<ImageGridProps, ImageGridState> {
     .subscribe(() => this.setState({ loading: true, error: false }))
 
     images$
-    .filter(({ state }: SuccessImageMessage): boolean => state === SUCCESS)
-    .subscribe(({ imageUrls }: SuccessImageMessage) => this.setState({ loading: false, error: false, imageUrls }))
+    .filter(({ state }: ImageMessage): boolean => state === SUCCESS)
+    .subscribe(({ imageUrls }: ImageMessage) => this.setState({ loading: false, error: false, imageUrls }))
 
     images$
     .filter(({ state }: ImageMessage): boolean => state === ERROR)

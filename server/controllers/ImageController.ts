@@ -1,10 +1,24 @@
-import { Controller, Get } from 'routing-controllers'
-import { getImageUrls } from 'services/images'
+import { Controller, Get, Post, UploadedFile } from 'routing-controllers'
+import { getImageUrls, saveImage } from 'services/images'
+
+const FILE_FIELD_NAME: string = 'file'
 
 @Controller()
 export class ImageController {
-    @Get('/images')
-    getAll() {
-       return getImageUrls()
-    }
+  @Get('/images')
+  async getAll(): Promise<string[]> {
+    return getImageUrls()
+  }
+
+  @Post('/images')
+  async uploadImage(@UploadedFile(FILE_FIELD_NAME) file: Express.Multer.File) {
+    // if (!allowedMimeTypes.includes(file.mimetype)) {
+    //   throw new BadRequestError(`${file.mimetype} is not a supported file type!`);
+    // }
+    await saveImage(file);
+
+    return {
+      status: 'OK'
+    };
+  }
 }
