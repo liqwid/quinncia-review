@@ -6,7 +6,7 @@ UI explained in Help.jpg
 
 ### Install
 
-1. Install node https://nodejs.org/en/
+1. Install node https://nodejs.org/en/, node 8 is required
 2. Install yarn globally `npm i -g yarn`
 3. Install packages `yarn`
 
